@@ -10,7 +10,7 @@ namespace Snake.Pages
     public class BoardBase : ComponentBase
     {
         public int[,] board { get; set; }
-        public const int boardSize = 10;
+        public const int boardSize = 15;
         public int testCounter { get; set; }
         public HashSet<int> snakeCells { get; set; }
         protected override async Task OnInitializedAsync()
@@ -18,9 +18,9 @@ namespace Snake.Pages
 
             testCounter = 0;
             setBoard();
-            LinkedList snake = setsnake(board);
+            LinkedList snake = setsnake();
             snakeCells = new HashSet<int>();
-            snakeCells.Add(snake.head.value);
+            snakeCells.Add(snake.head.value.cell);
             System.Timers.Timer t = new System.Timers.Timer();
             t.Elapsed += async (s, e) =>
             {
@@ -28,7 +28,7 @@ namespace Snake.Pages
                 await InvokeAsync(StateHasChanged);
             };
             t.Interval = 1000;
-            t.Start();
+            t.Start(); 
             //return base.OnInitializedAsync();
         }
 
@@ -45,9 +45,9 @@ namespace Snake.Pages
                 }
             }
         }
-        public LinkedList setsnake(int[,] board)
+        public LinkedList setsnake()
         {
-            LinkedList node = new LinkedList(44);
+            LinkedList node = new LinkedList(getStartingSnakeLLValue());
             return node;
         }
         public string getClassName(int cellValue, HashSet<int> snakeCells)
@@ -64,8 +64,19 @@ namespace Snake.Pages
         {
             int[] nextHeadCoords = new int[2];
             int nextCell = board[nextHeadCoords[0], nextHeadCoords[1]];
+            //LinkedListNode newHead = 
         }
 
+        public Node getStartingSnakeLLValue()
+        {
+            int rowSize = board.GetLength(0);
+            int colSize = board.GetLength(1);
+            int startingRow = rowSize/3;
+            int startingCol = colSize/3;
+            int startingCell = board[startingRow,startingCol];
+            
+            return new Node(startingRow, startingCol, startingCell);
+        }
     }
 
 }

@@ -9,7 +9,7 @@ namespace Snake.Classes
     {
         public LinkedListNode head { get; set; }
         public LinkedListNode tail { get; set; }
-        public LinkedList(int snakeCell)
+        public LinkedList(Node snakeCell)
         {
             LinkedListNode node = new LinkedListNode(snakeCell);
             this.head = node;
