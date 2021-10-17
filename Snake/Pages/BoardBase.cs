@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components.Web;
 using Snake.Classes;
 using System;
 using System.Collections.Generic;
@@ -10,7 +11,7 @@ namespace Snake.Pages
     public class BoardBase : ComponentBase
     {
         public int[,] board { get; set; }
-        public const int boardSize = 15;
+        public const int boardSize = 25;
         public int testCounter { get; set; }
         public LinkedList snake { get; set; }
         public HashSet<int> snakeCells { get; set; }
@@ -20,7 +21,7 @@ namespace Snake.Pages
 
             testCounter = 0;
             setBoard();
-            setDirection();
+            setDirection(Direction.DOWN);
             snake = setsnake();
             snakeCells = new HashSet<int>();
             snakeCells.Add(snake.head.value.cell);
@@ -66,7 +67,7 @@ namespace Snake.Pages
 
         public void moveSnake()
         {
-            Node newHeadNode = getCoordsInDirection(snake.head.value, direction);
+            Node newHeadNode = getCoordsInDirection();
             LinkedListNode newHead = new LinkedListNode(newHeadNode);
             LinkedListNode currentHead = snake.head;
             snake.head = newHead;
@@ -91,15 +92,15 @@ namespace Snake.Pages
             
             return new Node(startingRow, startingCol, startingCell);
         }
-        public void setDirection()
+        public void setDirection(Direction newDirection)
         {
-            direction = Direction.RIGHT;
+            direction = newDirection;
         }
-        public Node getCoordsInDirection(Node coords, Direction direction)
+        public Node getCoordsInDirection()
         {
-            int row = coords.row;
-            int col = coords.col;
-            int cell = board[coords.row, coords.col];
+            int row = snake.head.value.row;
+            int col = snake.head.value.col;
+            int cell = board[snake.head.value.row, snake.head.value.col];
             if (direction == Direction.UP)
             {
                 row --;
@@ -118,6 +119,22 @@ namespace Snake.Pages
             }
             cell = board[row, col];
             return new Node(row,col,cell);
+        }
+        protected void KeyDown(KeyboardEventArgs e)
+        {
+            int newDirection = getDirectionFromKey(e.Key);
+            if (newDirection == -1 || (Direction)newDirection == direction)
+                return;
+            setDirection((Direction)newDirection);
+        }
+
+        public int getDirectionFromKey(string key)
+        {
+            if (key == "ArrowUp") return (int)Direction.UP;
+            if (key == "ArrowRight") return (int)Direction.RIGHT;
+            if (key == "ArrowDown") return (int)Direction.DOWN;
+            if (key =="ArrowLeft") return (int)Direction.LEFT;
+            return -1;
         }
     }
 

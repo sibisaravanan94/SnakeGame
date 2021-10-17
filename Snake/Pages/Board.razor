@@ -1,7 +1,8 @@
 ﻿@page "/"
 @inherits BoardBase
 <h1>@testCounter</h1>
-<div class="board">
+<h2>Row: @snake.head.value.row Col: @snake.head.value.col Cell: @snake.head.value.cell</h2>
+<div class="board" @onkeydown="@KeyDown" tabindex="0">
     @for (int i = 0; i < boardSize; i++)
     {
         <div class="row">
