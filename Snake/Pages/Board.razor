@@ -1,0 +1,16 @@
+﻿@page "/"
+@inherits BoardBase
+<h1>@testCounter</h1>
+<div class="board">
+    @for (int i = 0; i < boardSize; i++)
+    {
+        <div class="row">
+            @for (int j = 0; j < boardSize; j++)
+            {
+                <div class=@getClassName(@board[i, j], snakeCells)> @board[i, j]</div>
+            }
+        </div>
+    }
+</div>
+
+
