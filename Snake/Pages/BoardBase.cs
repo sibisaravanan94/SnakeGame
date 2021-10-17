@@ -12,19 +12,23 @@ namespace Snake.Pages
         public int[,] board { get; set; }
         public const int boardSize = 15;
         public int testCounter { get; set; }
+        public LinkedList snake { get; set; }
         public HashSet<int> snakeCells { get; set; }
+        public Direction direction { get; set; }
         protected override async Task OnInitializedAsync()
         {
 
             testCounter = 0;
             setBoard();
-            LinkedList snake = setsnake();
+            setDirection();
+            snake = setsnake();
             snakeCells = new HashSet<int>();
             snakeCells.Add(snake.head.value.cell);
             System.Timers.Timer t = new System.Timers.Timer();
             t.Elapsed += async (s, e) =>
             {
                 testCounter++;
+                moveSnake();
                 await InvokeAsync(StateHasChanged);
             };
             t.Interval = 1000;
@@ -60,11 +64,21 @@ namespace Snake.Pages
             return className;
         }
 
-        public void moveSnake(int row, int col)
+        public void moveSnake()
         {
-            int[] nextHeadCoords = new int[2];
-            int nextCell = board[nextHeadCoords[0], nextHeadCoords[1]];
-            //LinkedListNode newHead = 
+            Node newHeadNode = getCoordsInDirection(snake.head.value, direction);
+            LinkedListNode newHead = new LinkedListNode(newHeadNode);
+            LinkedListNode currentHead = snake.head;
+            snake.head = newHead;
+            currentHead.next = newHead;
+
+            //HashSet<int> newSnakeCells = new HashSet<int>(snakeCells);
+            snakeCells.Remove(snake.tail.value.cell);
+            snakeCells.Add(snake.head.value.cell);
+
+            snake.tail = snake.tail.next;
+            if (snake.tail == null)
+                snake.tail = snake.head;
         }
 
         public Node getStartingSnakeLLValue()
@@ -76,6 +90,34 @@ namespace Snake.Pages
             int startingCell = board[startingRow,startingCol];
             
             return new Node(startingRow, startingCol, startingCell);
+        }
+        public void setDirection()
+        {
+            direction = Direction.RIGHT;
+        }
+        public Node getCoordsInDirection(Node coords, Direction direction)
+        {
+            int row = coords.row;
+            int col = coords.col;
+            int cell = board[coords.row, coords.col];
+            if (direction == Direction.UP)
+            {
+                row --;
+            }
+            if (direction == Direction.RIGHT)
+            {
+                col++;
+            }
+            if (direction == Direction.DOWN)
+            {
+                row++;
+            }
+            if (direction == Direction.LEFT)
+            {
+                col--;
+            }
+            cell = board[row, col];
+            return new Node(row,col,cell);
         }
     }
 
