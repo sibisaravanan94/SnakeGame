@@ -17,10 +17,12 @@ namespace Snake.Pages
         public HashSet<int> snakeCells { get; set; }
         public Direction direction { get; set; }
         public int foodCell { get; set; }
+        public int score { get; set; }
         protected override async Task OnInitializedAsync()
         {
 
             testCounter = 0;
+            score = 0;
             setBoard();
             setDirection(Direction.RIGHT);
             snake = setsnake();
@@ -72,12 +74,25 @@ namespace Snake.Pages
         public void moveSnake()
         {
             Node newHeadNode = getCoordsInDirection();
+            if (isOutOfBounds(newHeadNode))
+            {
+                handleGameOver();
+                return;
+            }
+            newHeadNode.cell = board[newHeadNode.row, newHeadNode.col];
+            if (snakeCells.Contains(newHeadNode.cell))
+            { 
+                handleGameOver();
+                return;
+            }
+
             LinkedListNode newHead = new LinkedListNode(newHeadNode);
             LinkedListNode currentHead = snake.head;
             snake.head = newHead;
             currentHead.next = newHead;
 
-            //HashSet<int> newSnakeCells = new HashSet<int>(snakeCells);
+            
+
             snakeCells.Remove(snake.tail.value.cell);
             snakeCells.Add(snake.head.value.cell);
 
@@ -87,7 +102,10 @@ namespace Snake.Pages
 
             bool foodConsumed = snake.head.value.cell == foodCell;
             if (foodConsumed)
+            {
                 foodCell = handleFoodConsumption();
+                score++;
+            }
         }
 
         public Node getStartingSnakeLLValue()
@@ -108,7 +126,7 @@ namespace Snake.Pages
         {
             int row = snake.head.value.row;
             int col = snake.head.value.col;
-            int cell = board[snake.head.value.row, snake.head.value.col];
+            //int cell = board[snake.head.value.row, snake.head.value.col];
             if (direction == Direction.UP)
             {
                 row --;
@@ -125,8 +143,8 @@ namespace Snake.Pages
             {
                 col--;
             }
-            cell = board[row, col];
-            return new Node(row,col,cell);
+            //cell = board[row, col];
+            return new Node(row,col,0);
         }
         protected void KeyDown(KeyboardEventArgs e)
         {
@@ -163,6 +181,25 @@ namespace Snake.Pages
             Random rand = new Random();
             int number = rand.Next(start, end+1);
             return number;
+        }
+        public bool isOutOfBounds(Node newHeadNode)
+        {
+            int row = newHeadNode.row;
+            int col = newHeadNode.col;
+            if (row < 0 || col < 0)
+                return true;
+            if (row >= boardSize || col >= boardSize)
+                return true;
+            return false;
+        }
+        public void handleGameOver()
+        {
+            score = 0;
+            setDirection(Direction.RIGHT);
+            snake = setsnake();
+            snakeCells = new HashSet<int>();
+            snakeCells.Add(snake.head.value.cell);
+            foodCell = snake.head.value.cell + 5;
         }
     }
 
