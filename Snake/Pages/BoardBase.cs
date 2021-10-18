@@ -11,7 +11,7 @@ namespace Snake.Pages
     public class BoardBase : ComponentBase
     {
         public int[,] board { get; set; }
-        public const int boardSize = 25;
+        public const int boardSize = 15;
         public int testCounter { get; set; }
         public LinkedList snake { get; set; }
         public HashSet<int> snakeCells { get; set; }
@@ -21,7 +21,7 @@ namespace Snake.Pages
 
             testCounter = 0;
             setBoard();
-            setDirection(Direction.DOWN);
+            setDirection(Direction.RIGHT);
             snake = setsnake();
             snakeCells = new HashSet<int>();
             snakeCells.Add(snake.head.value.cell);
@@ -32,7 +32,7 @@ namespace Snake.Pages
                 moveSnake();
                 await InvokeAsync(StateHasChanged);
             };
-            t.Interval = 1000;
+            t.Interval = 500;
             t.Start(); 
             //return base.OnInitializedAsync();
         }
