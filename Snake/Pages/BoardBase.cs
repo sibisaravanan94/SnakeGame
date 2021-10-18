@@ -16,6 +16,7 @@ namespace Snake.Pages
         public LinkedList snake { get; set; }
         public HashSet<int> snakeCells { get; set; }
         public Direction direction { get; set; }
+        public int foodCell { get; set; }
         protected override async Task OnInitializedAsync()
         {
 
@@ -25,6 +26,7 @@ namespace Snake.Pages
             snake = setsnake();
             snakeCells = new HashSet<int>();
             snakeCells.Add(snake.head.value.cell);
+            foodCell = snake.head.value.cell + 5;
             System.Timers.Timer t = new System.Timers.Timer();
             t.Elapsed += async (s, e) =>
             {
@@ -58,8 +60,10 @@ namespace Snake.Pages
         public string getClassName(int cellValue, HashSet<int> snakeCells)
         {
             string className = "";
-            if(snakeCells.Contains(cellValue))
+            if (snakeCells.Contains(cellValue))
                 className = "cell cell-green";
+            else if (cellValue == foodCell)
+                className = "cell cell-red";
             else
                 className = "cell";
             return className;
@@ -80,6 +84,10 @@ namespace Snake.Pages
             snake.tail = snake.tail.next;
             if (snake.tail == null)
                 snake.tail = snake.head;
+
+            bool foodConsumed = snake.head.value.cell == foodCell;
+            if (foodConsumed)
+                foodCell = handleFoodConsumption();
         }
 
         public Node getStartingSnakeLLValue()
@@ -135,6 +143,26 @@ namespace Snake.Pages
             if (key == "ArrowDown") return (int)Direction.DOWN;
             if (key =="ArrowLeft") return (int)Direction.LEFT;
             return -1;
+        }
+        public int handleFoodConsumption()
+        {
+            int maxPossibleCellValue = boardSize * boardSize;
+            int nextFoodCell;
+
+            while (true)
+            {
+                nextFoodCell = randomIntFromInterval(1, maxPossibleCellValue);
+                if (snakeCells.Contains(nextFoodCell) || foodCell == nextFoodCell)
+                    continue;
+                break;
+            }
+            return nextFoodCell;
+        }
+        public int randomIntFromInterval(int start, int end)
+        {
+            Random rand = new Random();
+            int number = rand.Next(start, end+1);
+            return number;
         }
     }
 
