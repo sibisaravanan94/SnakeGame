@@ -20,6 +20,7 @@ namespace Snake.Pages
         public int score { get; set; }
         public double PROBABILITY_OF_DIRECTION_REVERSAL_FOOD { get; set; }
         public bool foodShouldReverseDirection { get; set; }
+        public bool ListenKeyPress { get; set; }
         protected override async Task OnInitializedAsync()
         {
             score = 0;
@@ -34,6 +35,7 @@ namespace Snake.Pages
             System.Timers.Timer t = new System.Timers.Timer();
             t.Elapsed += async (s, e) =>
             {
+                ListenKeyPress = true;
                 moveSnake();
                 await InvokeAsync(StateHasChanged);
             };
@@ -105,7 +107,9 @@ namespace Snake.Pages
             if (foodConsumed)
             {
                 growSnake();
-                foodCell = handleFoodConsumption();
+                if (foodShouldReverseDirection) 
+                    reverseSnake();
+                 foodCell = handleFoodConsumption();
                 score++;
             }
         }
@@ -156,7 +160,11 @@ namespace Snake.Pages
             Direction oppositeDirection = getOppositeDirection((int)direction);
             if (snakeCells.Count > 1 && (Direction)newDirection == oppositeDirection)
                 return;
-            setDirection((Direction)newDirection);
+            if (ListenKeyPress)
+            {
+                setDirection((Direction)newDirection);
+                ListenKeyPress = false;
+            }
         }
 
         public int getDirectionFromKey(string key)
@@ -269,6 +277,27 @@ namespace Snake.Pages
             if ((Direction)direction == Direction.DOWN) return Direction.UP;
             if ((Direction)direction == Direction.LEFT) return Direction.RIGHT;
             return Direction.RIGHT;
+        }
+        public void reverseSnake()
+        {
+            int tailDirection = getNextNodeDirection();
+            direction = getOppositeDirection(tailDirection);
+            reverseLinkedList(snake.tail);
+            LinkedListNode newHead = snake.tail;
+            snake.tail = snake.head;
+            snake.head = newHead;
+        }
+        public void reverseLinkedList(LinkedListNode head)
+        {
+            LinkedListNode previousNode = null;
+            LinkedListNode currentNode = head;
+            while (currentNode != null)
+            {
+                LinkedListNode nextNode = currentNode.next;
+                currentNode.next = previousNode;
+                previousNode = currentNode;
+                currentNode = nextNode;
+            }
         }
     }
 
