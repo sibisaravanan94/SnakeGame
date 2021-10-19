@@ -152,6 +152,9 @@ namespace Snake.Pages
             int newDirection = getDirectionFromKey(e.Key);
             if (newDirection == -1 || (Direction)newDirection == direction)
                 return;
+            Direction oppositeDirection = getOppositeDirection((int)direction);
+            if (snakeCells.Count > 1 && (Direction)newDirection == oppositeDirection)
+                return;
             setDirection((Direction)newDirection);
         }
 
