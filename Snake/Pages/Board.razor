@@ -2,17 +2,23 @@
 @inherits BoardBase
 
 @*<h3>Row: @snake.head.value.row Col: @snake.head.value.col Cell: @snake.head.value.cell</h3>*@
-<h1>Score : @score</h1>
-<div class="board" @onkeydown="@KeyDown" tabindex="0">
-    @for (int i = 0; i < boardSize; i++)
-    {
-        <div class="row">
-            @for (int j = 0; j < boardSize; j++)
-            {
-                <div class=@getClassName(@board[i, j], snakeCells)></div>
-            }
-        </div>
-    }
+<div style="width: fit-content ">
+    <div >
+        <button class="btn cell-green" @onclick="startGame" @onkeydown="@KeyDown" style="width:auto">@displayPlayBtn</button>
+        <h1 class="float-right">Score : @score</h1>
+    </div>
+    <br />
+    <div class="board" @onkeydown="@KeyDown" tabindex="0">
+        @for (int i = 0; i < boardSize; i++)
+        {
+            <div class="row">
+                @for (int j = 0; j < boardSize; j++)
+                {
+                    <div class=@getClassName(@board[i, j], snakeCells)></div>
+                }
+            </div>
+        }
+    </div>
 </div>
 
 

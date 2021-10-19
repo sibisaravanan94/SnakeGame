@@ -21,8 +21,13 @@ namespace Snake.Pages
         public double PROBABILITY_OF_DIRECTION_REVERSAL_FOOD { get; set; }
         public bool foodShouldReverseDirection { get; set; }
         public bool ListenKeyPress { get; set; }
+        public bool doStartGame { get; set; }
+        public string displayPlayBtn { get; set; }
+        System.Timers.Timer t;
         protected override async Task OnInitializedAsync()
         {
+            doStartGame = false;
+            displayPlayBtn = "Start New Game";
             score = 0;
             PROBABILITY_OF_DIRECTION_REVERSAL_FOOD = 0.3;
             foodShouldReverseDirection = false;
@@ -32,15 +37,7 @@ namespace Snake.Pages
             snakeCells = new HashSet<int>();
             snakeCells.Add(snake.head.value.cell);
             foodCell = snake.head.value.cell + 5;
-            System.Timers.Timer t = new System.Timers.Timer();
-            t.Elapsed += async (s, e) =>
-            {
-                ListenKeyPress = true;
-                moveSnake();
-                await InvokeAsync(StateHasChanged);
-            };
-            t.Interval = 150;
-            t.Start(); 
+            
             //return base.OnInitializedAsync();
         }
 
@@ -57,6 +54,24 @@ namespace Snake.Pages
                 }
             }
         }
+        public void startGame()
+        {
+            if (!doStartGame)
+            {
+                defaultStartValues();
+                t = new System.Timers.Timer();
+                t.Elapsed += async (s, e) =>
+                {
+                    ListenKeyPress = true;
+                    moveSnake();
+                    await InvokeAsync(StateHasChanged);
+                };
+                t.Interval = 150;
+                t.Start();
+                doStartGame = true;
+            }
+        }
+        
         public LinkedList setsnake()
         {
             LinkedList node = new LinkedList(getStartingSnakeLLValue());
@@ -209,6 +224,13 @@ namespace Snake.Pages
             return false;
         }
         public void handleGameOver()
+        {
+            doStartGame = false;
+            t.Stop();
+            t = null;
+        }
+
+        public void defaultStartValues()
         {
             score = 0;
             setDirection(Direction.RIGHT);
