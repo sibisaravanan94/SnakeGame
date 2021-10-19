@@ -18,9 +18,13 @@ namespace Snake.Pages
         public Direction direction { get; set; }
         public int foodCell { get; set; }
         public int score { get; set; }
+        public double PROBABILITY_OF_DIRECTION_REVERSAL_FOOD { get; set; }
+        public bool foodShouldReverseDirection { get; set; }
         protected override async Task OnInitializedAsync()
         {
             score = 0;
+            PROBABILITY_OF_DIRECTION_REVERSAL_FOOD = 0.3;
+            foodShouldReverseDirection = false;
             setBoard();
             setDirection(Direction.RIGHT);
             snake = setsnake();
@@ -62,7 +66,7 @@ namespace Snake.Pages
             if (snakeCells.Contains(cellValue))
                 className = "cell cell-green";
             else if (cellValue == foodCell)
-                className = "cell cell-red";
+                className = (foodShouldReverseDirection)? "cell cell-purple" : "cell cell-red";
             else
                 className = "cell";
             return className;
@@ -175,6 +179,9 @@ namespace Snake.Pages
                     continue;
                 break;
             }
+            
+            foodShouldReverseDirection = (randomIntFromInterval(1, 11) < 3) ? true : false;
+            
             return nextFoodCell;
         }
         public int randomIntFromInterval(int start, int end)
