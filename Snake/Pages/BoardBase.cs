@@ -73,7 +73,7 @@ namespace Snake.Pages
 
         public void moveSnake()
         {
-            Node newHeadNode = getCoordsInDirection();
+            Node newHeadNode = getCoordsInDirection(snake.head, direction);
             if (isOutOfBounds(newHeadNode))
             {
                 handleGameOver();
@@ -103,6 +103,7 @@ namespace Snake.Pages
             bool foodConsumed = snake.head.value.cell == foodCell;
             if (foodConsumed)
             {
+                growSnake();
                 foodCell = handleFoodConsumption();
                 score++;
             }
@@ -122,24 +123,24 @@ namespace Snake.Pages
         {
             direction = newDirection;
         }
-        public Node getCoordsInDirection()
+        public Node getCoordsInDirection(LinkedListNode node, Direction newdirection)
         {
-            int row = snake.head.value.row;
-            int col = snake.head.value.col;
+            int row = node.value.row;
+            int col = node.value.col;
             //int cell = board[snake.head.value.row, snake.head.value.col];
-            if (direction == Direction.UP)
+            if (newdirection == Direction.UP)
             {
                 row --;
             }
-            if (direction == Direction.RIGHT)
+            if (newdirection == Direction.RIGHT)
             {
                 col++;
             }
-            if (direction == Direction.DOWN)
+            if (newdirection == Direction.DOWN)
             {
                 row++;
             }
-            if (direction == Direction.LEFT)
+            if (newdirection == Direction.LEFT)
             {
                 col--;
             }
@@ -200,6 +201,67 @@ namespace Snake.Pages
             snakeCells = new HashSet<int>();
             snakeCells.Add(snake.head.value.cell);
             foodCell = snake.head.value.cell + 5;
+        }
+
+        public void growSnake()
+        {
+            Node newTailNode = getGrowthNodeCoords();
+            if (isOutOfBounds(newTailNode))
+            {
+                handleGameOver();
+                return;
+            }
+            newTailNode.cell = board[newTailNode.row, newTailNode.col];
+
+            LinkedListNode newTail = new LinkedListNode(newTailNode);
+            LinkedListNode currentTail = snake.tail;
+            snake.tail = newTail;
+            snake.tail.next = currentTail;
+
+            snakeCells.Add(newTailNode.cell);
+        }
+
+        public Node getGrowthNodeCoords()
+        {
+            int tailDirection = getNextNodeDirection();
+            Direction growthDirection = getOppositeDirection(tailDirection);
+            Node newtailNode = getCoordsInDirection(snake.tail, growthDirection);
+            return newtailNode;
+        }
+        public int getNextNodeDirection()
+        {
+            LinkedListNode tail = snake.tail;
+            if (tail.next == null) 
+                return (int)direction;
+            int nextRow = tail.next.value.row;
+            int nextCol = tail.next.value.col;
+            int currentRow = tail.value.row;
+            int currentCol = tail.value.col;
+            if (nextRow == currentRow && nextCol == currentCol + 1)
+            {
+                return (int)Direction.RIGHT;
+            }
+            if (nextRow == currentRow && nextCol == currentCol - 1)
+            {
+                return (int)Direction.LEFT;
+            }
+            if (nextCol == currentCol && nextRow == currentRow + 1)
+            {
+                return (int)Direction.DOWN;
+            }
+            if (nextCol == currentCol && nextRow == currentRow - 1)
+            {
+                return (int)Direction.UP;
+            }
+            return -1;
+        }
+        public Direction getOppositeDirection(int direction)
+        {
+            if ((Direction)direction == Direction.UP) return Direction.DOWN;
+            if ((Direction)direction == Direction.RIGHT) return Direction.LEFT;
+            if ((Direction)direction == Direction.DOWN) return Direction.UP;
+            if ((Direction)direction == Direction.LEFT) return Direction.RIGHT;
+            return Direction.RIGHT;
         }
     }
 
