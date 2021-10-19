@@ -20,8 +20,6 @@ namespace Snake.Pages
         public int score { get; set; }
         protected override async Task OnInitializedAsync()
         {
-
-            testCounter = 0;
             score = 0;
             setBoard();
             setDirection(Direction.RIGHT);
@@ -32,11 +30,10 @@ namespace Snake.Pages
             System.Timers.Timer t = new System.Timers.Timer();
             t.Elapsed += async (s, e) =>
             {
-                testCounter++;
                 moveSnake();
                 await InvokeAsync(StateHasChanged);
             };
-            t.Interval = 500;
+            t.Interval = 150;
             t.Start(); 
             //return base.OnInitializedAsync();
         }
