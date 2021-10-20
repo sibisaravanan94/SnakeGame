@@ -27,3 +27,11 @@
 .cell-purple {
   background-color: purple;
 }
+
+.cell-lightgrey {
+    background-color: lightgrey;
+}
+
+.cell-grey {
+    background-color: grey;
+}

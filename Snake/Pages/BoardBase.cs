@@ -85,7 +85,10 @@ namespace Snake.Pages
             else if (cellValue == foodCell)
                 className = (foodShouldReverseDirection)? "cell cell-purple" : "cell cell-red";
             else
-                className = "cell";
+                className = (doStartGame)? "cell": "cell cell-grey";
+
+            //if (!doStartGame)
+            //    className = "cell .cell-lightgrey";
             return className;
         }
 
