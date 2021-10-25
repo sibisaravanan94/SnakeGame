@@ -7,11 +7,11 @@
     <div class="array-container">
         @for (int i = 0; i < NUMBER_OF_ARRAY_BARS; i++)
         {
-            <div class="array-bar" style="background-color:@PRIMARY_COLOR; height:@array[i]px">
+            <div class="array-bar" style="background-color:@color[i]; height:@array[i]px">
             </div>
         }
         <button @onclick="resetArray" style="width:auto; ">Generate New Array</button>
-        <button>Merge Sort</button>
+        <button @onclick="mergeSort">Merge Sort</button>
         <button>Quick Sort</button>
         <button>Heap Sort</button>
         <button>Bubble Sort</button>
