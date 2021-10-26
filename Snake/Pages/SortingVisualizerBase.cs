@@ -38,7 +38,60 @@ namespace Snake.Pages
             int number = rand.Next(start, end + 1);
             return number;
         }
-        
+        public async void quickSort()
+        {
+            int[] cloneArray = (int[])array.Clone();
+            getMergeSortAnimations(cloneArray);
+        }
+
+        public static int[] getQuickSortAnimations(int[] array)
+        {
+            QuickSort(array, 0, array.Length - 1);
+            return array;
+        }
+        public static void QuickSort(int[] array, int startIdx, int endIdx)
+        {
+            if (startIdx >= endIdx)
+                return;
+            int pivotIdx = startIdx;
+            int leftIdx = startIdx + 1;
+            int rightIdx = endIdx;
+            while (rightIdx >= leftIdx)
+            {
+                if (array[leftIdx] > array[pivotIdx] && array[rightIdx] < array[pivotIdx])
+                {
+                    swap(leftIdx, rightIdx, array);
+                }
+                if (array[leftIdx] <= array[pivotIdx])
+                {
+                    leftIdx++;
+                }
+                if (array[rightIdx] >= array[pivotIdx])
+                {
+                    rightIdx--;
+                }
+            }
+            swap(pivotIdx, rightIdx, array);
+            bool leftSubarrayIsSmaller = rightIdx - 1 - startIdx < endIdx - (rightIdx + 1);
+            if (leftSubarrayIsSmaller)
+            {
+                QuickSort(array, startIdx, rightIdx - 1);
+                QuickSort(array, rightIdx + 1, endIdx);
+            }
+            else
+            {
+                QuickSort(array, rightIdx + 1, endIdx);
+                QuickSort(array, startIdx, rightIdx - 1);
+            }
+
+        }
+        public static void swap(int i, int j, int[] array)
+        {
+            int temp = array[j];
+            array[j] = array[i];
+            array[i] = temp;
+
+        }
         public async void mergeSort()
         {
             int[] cloneArray = (int[])array.Clone();
