@@ -53,9 +53,9 @@ namespace Snake.Pages
                     if (isColorChange)
                     {
                         int[] temp = animations[i];
-                        color[temp[0]] = i % 3 == 0 ? SECONDARY_COLOR : PRIMARY_COLOR;
-                        color[temp[1]] = i % 3 == 0 ? SECONDARY_COLOR : PRIMARY_COLOR;
-                        color[temp[2]] = i % 3 == 0 ? SORTING_COLOR : PRIMARY_COLOR;
+                        color[temp[0]] = i % 3 == 0 ? SECONDARY_COLOR : (temp[3]== 1 && (temp[2] >= temp[0])) ? SORTING_COLOR : PRIMARY_COLOR;
+                        color[temp[1]] = i % 3 == 0 ? SECONDARY_COLOR : (temp[3]== 1 && (temp[2] >= temp[1])) ? SORTING_COLOR : PRIMARY_COLOR;
+                        color[temp[2]] = i % 3 == 0 ? SORTING_COLOR : (temp[3]==0)?PRIMARY_COLOR: SORTING_COLOR;
                     }
                     else
                     {
@@ -93,10 +93,13 @@ namespace Snake.Pages
             int k = startIdx;
             int i = startIdx;
             int j = middleIdx + 1;
+            int f = 0;
+            if (startIdx == 0 && endIdx == mainArray.Length - 1)
+                f = 1;
             while (i <= middleIdx && j <= endIdx)
             {
-                animations.Add(new int[] { i, j, k });
-                animations.Add(new int[] { i, j, k });
+                animations.Add(new int[] { i, j, k, f });
+                animations.Add(new int[] { i, j, k, f });
                 if (auxiliaryArray[i] <= auxiliaryArray[j])
                 {
                     animations.Add(new int[] { k, auxiliaryArray[i] });
@@ -110,15 +113,15 @@ namespace Snake.Pages
             }
             while (i <= middleIdx)
             {
-                animations.Add(new int[] { i, i, k });
-                animations.Add(new int[] { i, i, k });
+                animations.Add(new int[] { i, i, k, f });
+                animations.Add(new int[] { i, i, k, f });
                 animations.Add(new int[] { k, auxiliaryArray[i] });
                 mainArray[k++] = auxiliaryArray[i++];
             }
             while (j <= endIdx)
             {
-                animations.Add(new int[] { j, j, k });
-                animations.Add(new int[] { j, j, k });
+                animations.Add(new int[] { j, j, k, f });
+                animations.Add(new int[] { j, j, k, f });
                 animations.Add(new int[] { k, auxiliaryArray[j] });
                 mainArray[k++] = auxiliaryArray[j++];
             }
