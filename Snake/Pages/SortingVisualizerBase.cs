@@ -12,6 +12,7 @@ namespace Snake.Pages
         public const int ANIMATION_SPEED_MS = 1;
         public const string PRIMARY_COLOR = "turquoise";
         public const string SECONDARY_COLOR = "red";
+        public const string SORTING_COLOR = "blue";
         public List<int[]> animations { get; set; }
         public int[] array { get; set; }
         public string[] color { get; set; }
@@ -54,6 +55,7 @@ namespace Snake.Pages
                         int[] temp = animations[i];
                         color[temp[0]] = i % 3 == 0 ? SECONDARY_COLOR : PRIMARY_COLOR;
                         color[temp[1]] = i % 3 == 0 ? SECONDARY_COLOR : PRIMARY_COLOR;
+                        color[temp[2]] = i % 3 == 0 ? SORTING_COLOR : PRIMARY_COLOR;
                     }
                     else
                     {
@@ -93,50 +95,30 @@ namespace Snake.Pages
             int j = middleIdx + 1;
             while (i <= middleIdx && j <= endIdx)
             {
-                // These are the values that we're comparing; we push them once
-                // to change their color.
-                animations.Add(new int[] { i, j });
-                // These are the values that we're comparing; we push them a second
-                // time to revert their color.
-                animations.Add(new int[] { i, j });
+                animations.Add(new int[] { i, j, k });
+                animations.Add(new int[] { i, j, k });
                 if (auxiliaryArray[i] <= auxiliaryArray[j])
                 {
-                    // We overwrite the value at index k in the original array with the
-                    // value at index i in the auxiliary array.
                     animations.Add(new int[] { k, auxiliaryArray[i] });
                     mainArray[k++] = auxiliaryArray[i++];
                 }
                 else
                 {
-                    // We overwrite the value at index k in the original array with the
-                    // value at index j in the auxiliary array.
                     animations.Add(new int[] { k, auxiliaryArray[j] });
                     mainArray[k++] = auxiliaryArray[j++];
                 }
             }
             while (i <= middleIdx)
             {
-                // These are the values that we're comparing; we push them once
-                // to change their color.
-                animations.Add(new int[] { i, i });
-                // These are the values that we're comparing; we push them a second
-                // time to revert their color.
-                animations.Add(new int[] { i, i });
-                // We overwrite the value at index k in the original array with the
-                // value at index i in the auxiliary array.
+                animations.Add(new int[] { i, i, k });
+                animations.Add(new int[] { i, i, k });
                 animations.Add(new int[] { k, auxiliaryArray[i] });
                 mainArray[k++] = auxiliaryArray[i++];
             }
             while (j <= endIdx)
             {
-                // These are the values that we're comparing; we push them once
-                // to change their color.
-                animations.Add(new int[] { j, j });
-                // These are the values that we're comparing; we push them a second
-                // time to revert their color.
-                animations.Add(new int[] { j, j });
-                // We overwrite the value at index k in the original array with the
-                // value at index j in the auxiliary array.
+                animations.Add(new int[] { j, j, k });
+                animations.Add(new int[] { j, j, k });
                 animations.Add(new int[] { k, auxiliaryArray[j] });
                 mainArray[k++] = auxiliaryArray[j++];
             }
