@@ -46,6 +46,13 @@ namespace Snake.Pages
             int[] cloneArray = (int[])array.Clone();
             getQuickSortAnimations(cloneArray, 0, cloneArray.Length - 1, animations);
             int i = 0;
+            if (i == 0)
+            {
+                for (int j = 0; j < color.Count(); j++)
+                {
+                    color[j] = PRIMARY_COLOR;
+                }
+            }
             t = new System.Timers.Timer();
             t.Elapsed += async (s, e) =>
             {
@@ -70,10 +77,22 @@ namespace Snake.Pages
                     }
                 }
                 i++;
+                
+                if (i >= animations.Count)
+                {
+                    t.Stop();
+                    t = null;
+                    for (int j = 0; j < color.Count(); j++)
+                    {
+                        color[j] = SORTING_COLOR;
+                    }
+                    
+                }
                 await InvokeAsync(StateHasChanged);
             };
             t.Interval = 0.1;
             t.Start();
+            
         }
 
         public void getQuickSortAnimations(int[] array, int startIdx, int endIdx, List<int[]> animations)
@@ -132,6 +151,13 @@ namespace Snake.Pages
             int[] cloneArray = (int[])array.Clone();
             getMergeSortAnimations(cloneArray);
             int i = 0;
+            if (i == 0)
+            {
+                for (int j = 0; j < color.Count(); j++)
+                {
+                    color[j] = PRIMARY_COLOR;
+                }
+            }
             t = new System.Timers.Timer();
             t.Elapsed += async (s, e) =>
             {
@@ -152,6 +178,11 @@ namespace Snake.Pages
                     }
                 }
                 i++;
+                if (i >= animations.Count)
+                {
+                    t.Stop();
+                    t = null;
+                }
                 await InvokeAsync(StateHasChanged);
             };
             t.Interval = 0.1;
