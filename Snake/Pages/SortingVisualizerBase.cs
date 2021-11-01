@@ -40,6 +40,88 @@ namespace Snake.Pages
             int number = rand.Next(start, end + 1);
             return number;
         }
+        public async void bubbleSort()
+        {
+            animations = new List<int[]>();
+            int[] cloneArray = (int[])array.Clone();
+            getBubbleSortAnimations(cloneArray, animations);
+            int i = 0;
+            if (i == 0)
+            {
+                for (int j = 0; j < color.Count(); j++)
+                {
+                    color[j] = PRIMARY_COLOR;
+                }
+            }
+            t = new System.Timers.Timer();
+            t.Elapsed += async (s, e) =>
+            {
+                if (i < animations.Count)
+                {
+                    int[] temp = animations[i];
+                    bool isColorChange = temp[0] < 2;
+                    if (isColorChange)
+                    {
+                        color[temp[1]] = temp[0] == 0 ? SECONDARY_COLOR : PRIMARY_COLOR;
+                        color[temp[2]] = temp[0] == 0 ? SECONDARY_COLOR : PRIMARY_COLOR;
+                        //color[temp[3]] = i % 3 == 0 ? SORTING_COLOR : (temp[3] == 0) ? PRIMARY_COLOR : SORTING_COLOR;
+                    }
+                    else if (temp[0] == 3)
+                    {
+                        color[temp[1]] = SORTING_COLOR;
+                    }
+                    else
+                    {
+                        array[temp[1]] = temp[2];
+                    }
+                }
+                i++;
+
+                if (i >= animations.Count)
+                {
+                    t.Stop();
+                    t = null;
+                    for (int j = 0; j < color.Count(); j++)
+                    {
+                        color[j] = SORTING_COLOR;
+                    }
+
+                }
+                await InvokeAsync(StateHasChanged);
+            };
+            t.Interval = 0.1;
+            t.Start();
+
+        }
+        public void getBubbleSortAnimations(int[] array, List<int[]> animations)
+        {
+            if (array.Length == 0)
+            {
+                return ;
+            }
+            bool isSorted = false;
+            int counter = 0;
+            while (!isSorted)
+            {
+                isSorted = true;
+                for (int i = 0; i < array.Length - 1 - counter; i++)
+                {
+                    animations.Add(new int[] { 0, i, i+1 });
+                    animations.Add(new int[] { 1, i, i+1 });
+                    if (array[i] > array[i + 1])
+                    {
+                        animations.Add(new int[] { 2, i+1, array[i] });
+                        animations.Add(new int[] { 2, i, array[i+1] });
+                        swap(i, i + 1, array);
+                        isSorted = false;
+                    }
+                }
+                counter++;
+                animations.Add(new int[] { 3, array.Length - counter });
+            }
+            
+
+        }
         public async void quickSort()
         {
             animations = new List<int[]>();
